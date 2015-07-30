@@ -3,12 +3,7 @@
 
 $puppetmaster = <<PUPPETMASTER
 sudo yum -y install https://yum.puppetlabs.com/puppetlabs-release-el-6.noarch.rpm
-sudo yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm
-sudo yum -y install http://yum.theforeman.org/releases/latest/el6/x86_64/foreman-release.rpm
-sudo yum -y install rhscl-ruby193-epel-6-x86_64.noarch
-sudo yum -y install puppet-server
-sudo yum -y install foreman-installer
-sudo yum -y install foreman
+sudo yum -y install puppet
 PUPPETMASTER
 
 # All Vagrant configuration is done below. The "2" in Vagrant.configure
@@ -22,12 +17,13 @@ Vagrant.configure(2) do |config|
 
   config.vm.define "master" do |master|
     master.vm.box = "chef/centos-6.6"
-    master.vm.hostname = "puppetmaster.domandlinda.ca"
+    master.vm.hostname = "puppetmaster.dom.local"
     master.vm.network "public_network", ip: "10.25.14.180", bridge: "enp0s20f0"
     master.vm.provision "shell",
       inline: $puppetmaster
     master.vm.provision "puppet" do |puppet|
       puppet.synced_folder_type = "rsync"
+      puppet.module_path = "modules"
     end
   end
 
