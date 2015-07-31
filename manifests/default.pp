@@ -1,14 +1,23 @@
 node default {
-  class { '::puppet':
-    server          => true,
-    server_git_repo => true,
-    require         => Yumrepo['epel']
+  package {'foreman-installer':
+    ensure   => installed,
+    provider => 'yum',
+    require  => [ Package['epel-release'],
+                  Package['puppetlabs-release'],
+                  Package['foreman-release']]
   }
 
-  yumrepo { 'epel':
-      mirrorlist => 'https://mirrors.fedoraproject.org/metalink?repo=epel-6&arch=$basearch',
-      descr      => 'Extra Packages for Enterprise Linux 6',
-      enabled    => 1,
-      gpgcheck   => 0
+  package {'epel-release':
+    provider => 'rpm',
+    source   => 'https://dl.fedoraproject.org/pub/epel/epel-release-latest-6.noarch.rpm'
   }
+  package {'puppetlabs-release':
+    provider => 'rpm',
+    source   => 'http://yum.puppetlabs.com/puppetlabs-release-el-6.noarch.rpm'
+  }
+  package {'foreman-release':
+    provider => 'rpm',
+    source   => 'http://yum.theforeman.org/releases/1.8/el6/x86_64/foreman-release.rpm'
+  }
+
 }
